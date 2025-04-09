@@ -1,42 +1,90 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Reset body and html to remove default margin */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Use flexbox to center the container */
+.app-container {
+  display: flex;
+  justify-content: center;   /* center horizontally */
+  align-items: center;       /* center vertically */
+  height: 100vh;             /* full height of the viewport */
+  background-color: #f0f2f5; /* Optional background color */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* Style for the card */
 .card {
-  padding: 2em;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px; /* Set a max width for the card */
 }
 
-.read-the-docs {
-  color: #888;
+.card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.card input {
+  width: 93%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Button styling */
+.card button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the 'or' divider */
+.divider {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.divider h1 {
+  display: inline-block;
+  background-color: #f0f2f5;
+  padding: 0 1rem;
+  font-size: 1.25rem;
+}
+
+/* Styling for the 'Don't have an account?' section */
+.signup {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.signup h2 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.signup button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+.signup button:hover {
+  background-color: #218838;
 }
