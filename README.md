@@ -7,6 +7,7 @@ Features of the system includes;
 - authentication process (matching key details of the item, verifying evidences)
 - logs for each item activity
 
+
 GROUP 1
 - Abelo, Marc Lawrence
 - Carrasco, Lorebina
