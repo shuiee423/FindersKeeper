@@ -15,7 +15,7 @@
   }
   
   .site-name {
-    color: var(--text);
+    color: var(--text2);
     font-weight: bold;
     font-size: 1.5rem;
   }
@@ -24,7 +24,7 @@
     margin-left: 1rem;
     cursor: pointer;
     background-color: var(--accent);
-    color: var(--bg);
+    color: var(--text2);
     padding: 0.6rem 0.6rem;
     border-radius: 10px;
     transition: background-color 0.3s ease;
@@ -38,10 +38,10 @@
 
   .btn button {
     margin: 2rem;
-    margin-left: 1rem;
+    margin-left: 2rem;
     cursor: pointer;
     background-color: var(--accent2);
-    color: var(--bg);
+    color: var(--text2);
     padding: 0.6rem 0.6rem;
     border-radius: 10px;
     transition: background-color 0.3s ease;
@@ -55,7 +55,7 @@
     background-color: var(--accent4);
     border-left: 1px solid #888;
     width: 200px;
-    height: 100%;
+    height: 80%;
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
   }
   
@@ -89,7 +89,7 @@
   
   /* Section label */
   .section-label {
-    margin: 1rem;
+    margin: 2rem;
     font-weight: bold;
     color: var(--accent2);
     border-bottom: 2px solid var(--text);
@@ -99,16 +99,16 @@
   /* Cards */
   .card-container {
     display: flex;
-    justify-content: space-evenly;
-    padding: 1rem;
+    justify-content: left;
+    padding: 0.5rem;
     gap: 1rem;
+    margin: 2rem;
     margin-bottom: 5rem;
   }
   
   .post-card {
-    width: calc(20% - 1rem);
-    min-width: 150px;
-    height: 100px;
+    width: 250px;
+    height: 220px;
     background-color: var(--card-bg);
     border: 1px solid var(--accent);
     border-radius: 8px;
@@ -124,6 +124,7 @@
 
   /* Footer */
   .footer {
+    color: #000;
     background-color: var(--accent4);
     text-align: center;
     padding: 1rem;
@@ -133,10 +134,11 @@
   .light {
     --bg: white;
     --text: black;
-    --accent: #008080;
-    --accent2: #00a79d;
-    --accent3: #2ec4b6;
-    --accent4: #5edeb3;
+    --text2: black;
+    --accent: #febe00;
+    --accent2: #ffd300;
+    --accent3: #fec20c;
+    --accent4: #fada5e;
     --card-bg: #f9f9f9;
   
     background-color: var(--bg);
@@ -145,12 +147,13 @@
   
   /* Dark Theme */
   .dark {
-    --bg: #000;
+    --bg: #181818;
     --text: #fff;
-    --accent: #ffc0cb;
-    --accent2: #ffb6c1;
-    --accent3: #ff99b3;
-    --accent4: #ff7fa2;
+    --text2: #000;
+    --accent: #fed053;
+    --accent2: #fec20c;
+    --accent3: #ffd300;
+    --accent4: #fed053;
     --card-bg: #1a1a1a;
   
     background-color: var(--bg);
