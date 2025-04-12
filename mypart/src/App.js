@@ -19,7 +19,7 @@ const App = () => {
           <button onClick={toggleMenu}>Menu</button>
         </div>
         {menuOpen && (
-          <div className="side-menu">
+          <div className={`side-menu ${menuOpen ? 'open' : ''}`}>
             <ul>
               <li>Posts</li>
               <li>Claim Request</li>
