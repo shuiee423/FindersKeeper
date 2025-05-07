@@ -1,4 +1,5 @@
 // CreatePost.jsx
+import axios from 'axios';
 import React, { useRef, useState } from 'react';
 
 function CreatePost({ onNavigate, onPostSubmit, nickname, schoolId }) {
@@ -28,12 +29,32 @@ function CreatePost({ onNavigate, onPostSubmit, nickname, schoolId }) {
     }
   };
 
-  const handlePost = (e) => {
+  const handlePost = async (e) => {
     e.preventDefault();
-    const timestamp = new Date();
-    const newPost = { image, description, tags, location, keyDetails, timestamp, nickname, schoolId };
-    onPostSubmit(newPost);
-    onNavigate('home');
+  
+    const formData = new FormData();
+  
+    if (fileInputRef.current.files[0]) {
+      formData.append('image', fileInputRef.current.files[0]);
+    }
+  
+    formData.append('description', description);
+    formData.append('tags', JSON.stringify(tags));
+    formData.append('location', location);
+    formData.append('keyDetails', keyDetails);
+    formData.append('nickname', nickname);
+    formData.append('schoolId', schoolId);
+  
+    try {
+      const response = await axios.post('http://localhost/fksys/post.php', formData);
+      console.log(response.data);
+  
+      alert('Post submitted successfully!');
+      onNavigate('home');
+    } catch (error) {
+      console.error('Error submitting post:', error);
+      alert('Failed to submit post. Please try again.');
+    }
   };
 
   return (

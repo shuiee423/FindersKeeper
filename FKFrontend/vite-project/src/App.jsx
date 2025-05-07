@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SignupLogin from './SignupLogin';
 import Home from './Home';
 import CreatePost from './CreatePost';
@@ -17,24 +17,75 @@ function App() {
   const [userType, setUserType] = useState('user');
   const [darkMode, setDarkMode] = useState(false);
 
-  const [registeredUsers, setRegisteredUsers] = useState([]);
-
   const [posts, setPosts] = useState([]);
-  const addPost = (newPost) => { 
-    setPosts((prev) => [...prev, newPost]);
-  };
-  const [selectedPost, setSelectedPost] = useState(null);
+  const [claims, setClaims] = useState([]);
 
+  const [userNickname, setUserNickname] = useState('');
+  const [userSchoolId, setUserSchoolId] = useState('');
+
+  const [selectedPost, setSelectedPost] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  const [userNickname, setUserNickname] = useState('');
+  // === Load Posts from PHP ===
+  useEffect(() => {
+    fetch("http://localhost/fksystem/post.php")
+      .then((res) => res.json())
+      .then((data) => setPosts(data))
+      .catch((err) => console.error("Error fetching posts:", err));
+  }, []);
 
-  const [userSchoolId, setUserSchoolId] = useState('');
-  
-  const [claims, setClaims] = useState([]);
+  // === Load Claims from PHP ===
+  useEffect(() => {
+    fetch("http://localhost/fksystem/claim.php")
+      .then((res) => res.json())
+      .then((data) => setClaims(data))
+      .catch((err) => console.error("Error fetching claims:", err));
+  }, []);
+
+  // === Add Post to PHP ===
+  const addPost = (newPost) => {
+    const formData = new FormData();
+    for (const key in newPost) {
+      if (key === 'tags') {
+        formData.append('tags', JSON.stringify(newPost[key]));
+      } else if (key === 'image' && typeof newPost[key] !== 'string') {
+        formData.append('image', newPost[key]);
+      } else {
+        formData.append(key, newPost[key]);
+      }
+    }
+
+    fetch("http://localhost/fksystem/post.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => setPosts((prev) => [...prev, data]))
+      .catch((err) => console.error("Failed to add post:", err));
+  };
+
+  // === Add Claim to PHP ===
   const addClaim = (newClaim) => {
-    setClaims((prev) => [...prev, newClaim]); };
+    const formData = new FormData();
+    for (const key in newClaim) {
+      if (key === 'post') {
+        formData.append('post', JSON.stringify(newClaim[key]));
+      } else if (key === 'proofImage' && typeof newClaim[key] !== 'string') {
+        formData.append('proofImage', newClaim[key]);
+      } else {
+        formData.append(key, newClaim[key]);
+      }
+    }
+
+    fetch("http://localhost/fksystem/claim.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => setClaims((prev) => [...prev, data]))
+      .catch((err) => console.error("Failed to add claim:", err));
+  };
 
   return (
     <div className={darkMode ? 'dark' : 'light'}>
@@ -45,8 +96,6 @@ function App() {
             setUserType={setUserType}
             setUserNickname={setUserNickname}
             setUserSchoolId={setUserSchoolId}
-            registeredUsers={registeredUsers}
-            setRegisteredUsers={setRegisteredUsers}
           />
         )}
 
@@ -72,23 +121,40 @@ function App() {
         )}
 
         {currentPage === 'search' && (
-          <Search onNavigate={setCurrentPage} posts={posts} 
-          setSearchKeyword={setSearchKeyword} setFilteredPosts={setFilteredPosts}/>
+          <Search
+            onNavigate={setCurrentPage}
+            posts={posts}
+            setSearchKeyword={setSearchKeyword}
+            setFilteredPosts={setFilteredPosts}
+          />
         )}
 
         {currentPage === 'results' && (
-          <Results onNavigate={setCurrentPage} keyword={searchKeyword}
-          filteredPosts={filteredPosts} posts={posts} setSelectedPost={setSelectedPost} />
+          <Results
+            onNavigate={setCurrentPage}
+            keyword={searchKeyword}
+            filteredPosts={filteredPosts}
+            posts={posts}
+            setSelectedPost={setSelectedPost}
+          />
         )}
 
         {currentPage === 'viewPost' && (
-          <ViewPost onNavigate={setCurrentPage} post={selectedPost} 
-          userType={userType} setSelectedPost={setSelectedPost}/>
+          <ViewPost
+            onNavigate={setCurrentPage}
+            post={selectedPost}
+            userType={userType}
+            setSelectedPost={setSelectedPost}
+          />
         )}
 
         {currentPage === 'verification' && (
-          <VerificationForm onNavigate={setCurrentPage} onClaimSubmit={addClaim}
-          post={selectedPost} userSchoolId={userSchoolId}/>
+          <VerificationForm
+            onNavigate={setCurrentPage}
+            onClaimSubmit={addClaim}
+            post={selectedPost}
+            userSchoolId={userSchoolId}
+          />
         )}
 
         {currentPage === 'confirmation' && (
@@ -96,12 +162,21 @@ function App() {
         )}
 
         {currentPage === 'post' && (
-          <Post onNavigate={setCurrentPage} userSchoolId={userSchoolId} posts={posts} />
+          <Post
+            onNavigate={setCurrentPage}
+            userSchoolId={userSchoolId}
+            posts={posts}
+          />
         )}
 
         {currentPage === 'claimRequest' && (
-          <ClaimRequest onNavigate={setCurrentPage} claims={claims} userType={userType} 
-          posts={posts} userSchoolId={userSchoolId} />
+          <ClaimRequest
+            onNavigate={setCurrentPage}
+            claims={claims}
+            userType={userType}
+            posts={posts}
+            userSchoolId={userSchoolId}
+          />
         )}
 
         {currentPage === 'notifications' && (
@@ -113,10 +188,13 @@ function App() {
         )}
 
         {currentPage === 'reclaimRequest' && (
-          <ReclaimRequest onNavigate={setCurrentPage} claims={claims} posts={posts}
-          userType={userType}/>
-        )}      
-
+          <ReclaimRequest
+            onNavigate={setCurrentPage}
+            claims={claims}
+            posts={posts}
+            userType={userType}
+          />
+        )}
       </div>
     </div>
   );

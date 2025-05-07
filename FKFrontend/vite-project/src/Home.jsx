@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-function Home({ onNavigate, userType, darkMode, setDarkMode, posts, setSelectedPost, nickname }) {
+function Home({ onNavigate, userType, darkMode, setDarkMode, setSelectedPost, nickname }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [fetchedPosts, setFetchedPosts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost/your-backend-folder/post.php') // Update to match your actual PHP path
+      .then(res => res.json())
+      .then(data => setFetchedPosts(data))
+      .catch(err => console.error('Error fetching posts:', err));
+  }, []);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -102,8 +110,8 @@ function Home({ onNavigate, userType, darkMode, setDarkMode, posts, setSelectedP
         <h3 className="text-2xl font-bold text-blue-600 border-b border-gray-400 pb-1 mb-4">Relevant Posts</h3>
 
         <div className="flex flex-wrap gap-4 justify-start mt-6">
-          {posts.length > 0 ? (
-            posts.map((post, index) => (
+          {fetchedPosts.length > 0 ? (
+            fetchedPosts.map((post, index) => (
               <div
                 key={index}
                 className="w-64 bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden hover:shadow-lg border-2 dark:border-gray-800 hover:border-yellow-500 transition cursor-pointer"

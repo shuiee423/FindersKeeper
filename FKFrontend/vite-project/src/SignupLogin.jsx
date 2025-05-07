@@ -4,55 +4,55 @@ function SignupLogin({
   onNavigate,
   setUserType,
   setUserNickname,
-  setUserSchoolId,
-  registeredUsers,
-  setRegisteredUsers,
+  setUserSchoolId
 }) {
   const [isSignup, setIsSignup] = useState(false);
   const [nickname, setNickname] = useState('');
   const [schoolId, setSchoolId] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Admin shortcut
+  
     if (schoolId === 'a' && email === 'a@edu.com') {
       setUserType('admin');
       setUserNickname('Admin');
       onNavigate('home');
       return;
     }
-
-    if (isSignup) {
-      const exists = registeredUsers.some((u) => u.schoolId === schoolId);
-      if (exists) {
-        alert('An account with this School ID already exists.');
+  
+    const payload = {
+      schoolId,
+      email,
+      ...(isSignup && { nickname }),
+      action: isSignup ? 'register' : 'login',
+    };
+  
+    try {
+      const response = await fetch('http://localhost/your-backend-folder/user.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json();
+  
+      if (!data.success) {
+        alert(data.message || 'Something went wrong.');
         return;
       }
-
-      // Register user
-      setRegisteredUsers((prev) => [...prev, { schoolId, nickname, email }]);
-      alert('Account created successfully! Please log in.');
-      setIsSignup(false);
-      return;
+  
+      // If successful:
+      setUserType('user');
+      setUserNickname(data.nickname);
+      setUserSchoolId(data.schoolId);
+      onNavigate('home');
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Server error. Please try again later.');
     }
-
-    // LOGIN mode
-    const found = registeredUsers.find(
-      (u) => u.schoolId === schoolId && u.email === email
-    );
-
-    if (!found) {
-      alert('No account found. Please sign up first.');
-      return;
-    }
-
-    // Log user in
-    setUserType('user');
-    setUserNickname(found.nickname);
-    setUserSchoolId(found.schoolId);
-    onNavigate('home');
   };
 
   return (

@@ -20,22 +20,43 @@ function VerificationForm({ onNavigate, onClaimSubmit, post, userSchoolId }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit clicked");
-    const claim = {
-      schoolId,
-      fullName,
-      department,
-      phone,
-      proofDesc,
-      proofImage,
-      post,
-      timestamp: new Date()
-    };
-    console.log("Claim to submit:", claim)
-    onNavigate('confirmation');
-    onClaimSubmit(claim);
+  
+    const formData = new FormData();
+    formData.append('schoolId', schoolId);
+    formData.append('fullName', fullName);
+    formData.append('department', department);
+    formData.append('phone', phone);
+    formData.append('proofDesc', proofDesc);
+  
+    if (fileInputRef.current?.files[0]) {
+      formData.append('proofImage', fileInputRef.current.files[0]);
+    }
+  
+    // Add post metadata if available
+    formData.append('postDescription', post.description);
+    formData.append('postLocation', post.location);
+    formData.append('postTimestamp', post.timestamp);
+    formData.append('postNickname', post.nickname);
+    formData.append('postSchoolId', post.schoolId);
+  
+    try {
+      const res = await fetch('http://localhost/your-folder-name/claim.php', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (res.ok) {
+        alert('Claim submitted successfully!');
+        onNavigate('confirmation');
+      } else {
+        alert('Failed to submit claim.');
+      }
+    } catch (error) {
+      console.error('Error submitting claim:', error);
+      alert('An error occurred while submitting the claim.');
+    }
   };
 
   useEffect(() => {

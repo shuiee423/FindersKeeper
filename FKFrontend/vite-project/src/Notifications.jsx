@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-function Notifications({ onNavigate, claims, userSchoolId }) {
-  // Filter only accepted claims (for now, simulate with a placeholder `status`)
-  const acceptedClaims = claims.filter(
-    (claim) => claim.schoolId === userSchoolId && claim.status === 'accepted'
-  );
+function Notifications({ onNavigate, userSchoolId }) {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch(`http://localhost/notification.php?schoolId=${userSchoolId}`);
+        const data = await response.json();
+        setNotifications(data);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, [userSchoolId]);
 
   return (
     <div className="p-6 bg-white dark:bg-gray-800 min-h-screen">
@@ -21,25 +35,36 @@ function Notifications({ onNavigate, claims, userSchoolId }) {
         </button>
       </div>
 
-      {acceptedClaims.length === 0 ? (
+      {loading ? (
+        <p className="text-gray-600 dark:text-gray-300">Loading...</p>
+      ) : notifications.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-300">
           No notifications at the moment.
         </p>
       ) : (
-        acceptedClaims.map((claim, index) => (
+        notifications.map((note, index) => (
           <div
             key={index}
-            className="border border-green-400 bg-green-50 dark:bg-gray-700 p-5 rounded-lg text-green-700 dark:text-green-300"
+            className="border border-green-400 bg-green-50 dark:bg-gray-700 p-5 rounded-lg text-green-700 dark:text-green-300 mb-4"
           >
-            <h3 className="text-lg font-bold mb-2">Claim Request Approved!</h3>
-            <p className="mb-2">
-              You may now retrieve the item at:
-              <br />
-              <strong>Building 21 - Guard House</strong>
-            </p>
+            <h3 className="text-lg font-bold mb-2">
+              Claim Request {note.status === 'accepted' ? 'Approved' : 'Rejected'}
+            </h3>
+
+            {note.status === 'accepted' ? (
+              <p className="mb-2">
+                You may now retrieve the item at:
+                <br />
+                <strong>Building 21 - Guard House</strong>
+              </p>
+            ) : (
+              <p className="mb-2 text-red-600 dark:text-red-400">
+                Unfortunately, your claim request was rejected.
+              </p>
+            )}
+
             <p className="text-sm text-gray-700 dark:text-gray-300 italic">
-              Please note that there is a chance another user may reclaim this item
-              with stronger proof. Make sure to verify with security personnel.
+              {note.message}
             </p>
           </div>
         ))

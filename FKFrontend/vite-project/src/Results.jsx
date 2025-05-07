@@ -57,12 +57,16 @@ function Results({ onNavigate, keyword, filteredPosts, posts, setSelectedPost })
                     onNavigate('viewPost');
                   }}
                 >
-                  {post.image && (
+                  {post.image ? (
                     <img
-                      src={post.image}
+                      src={`http://localhost/fk-backend/${post.image}`}
                       alt="Post preview"
                       className="block mx-auto h-40 w-40 object-cover"
                     />
+                  ) : (
+                    <div className="block mx-auto h-40 w-40 flex items-center justify-center bg-gray-200 text-sm text-gray-500 italic">
+                      No Image
+                    </div>
                   )}
                   <div className="p-2">
                     <p className="text-sm text-blue-800 dark:text-white truncate">
@@ -95,7 +99,7 @@ function Results({ onNavigate, keyword, filteredPosts, posts, setSelectedPost })
                   <div
                     key={idx}
                     className="w-[200px] h-[230px] bg-gray-100 dark:bg-gray-700 border border-blue-300 rounded-md p-2 flex items-end cursor-pointer hover:shadow-lg dark:hover:shadow-gray-600 hover:border-yellow-500 hover:border-2"
-                    onClick={() => onNavigate('viewPost')}
+                    onClick={() => {setSelectedPost(post); onNavigate('viewPost')}}
                   >
                     <p className="text-sm text-blue-800 dark:text-white truncate">
                       {post.description?.split('\n')[0] || 'Untitled Post'}

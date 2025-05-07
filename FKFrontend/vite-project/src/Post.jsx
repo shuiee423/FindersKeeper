@@ -18,59 +18,79 @@ function Post({ posts, userSchoolId, onNavigate }) {
       </div>
 
       {userPosts.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-300">You haven’t posted anything yet.</p>
+        <p className="text-gray-600 dark:text-gray-300">
+          You haven’t posted anything yet.
+        </p>
       ) : (
-        userPosts.map((post, index) => (
-          <div key={index} className="mb-6 p-4 rounded-lg border border-blue-300 bg-blue-50 dark:bg-gray-700">
-            {post.image && (
-              <img
-                src={post.image}
-                alt="Item"
-                className="w-full max-h-60 object-contain rounded mb-4"
-              />
-            )}
-            <p className="text-gray-800 dark:text-white text-lg mb-4">
-              {post.description || 'No description provided.'}
-            </p>
-            {post.tags && post.tags.length > 0 && (
-              <div className="mb-5">
-                <h4 className="text-sm font-semibold text-blue-500 dark:text-blue-300 mb-1">Tags:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-yellow-200 text-yellow-800 px-3 py-1 rounded-full text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+        userPosts.map((post, index) => {
+          // Ensure tags is an array
+          const tags = Array.isArray(post.tags)
+            ? post.tags
+            : JSON.parse(post.tags || '[]');
+
+          return (
+            <div
+              key={index}
+              className="mb-6 p-4 rounded-lg border border-blue-300 bg-blue-50 dark:bg-gray-700"
+            >
+              {post.image ? (
+                <img
+                  src={`http://localhost/your-folder/uploads/${post.image}`}
+                  alt="Item"
+                  className="w-full max-h-60 object-contain rounded mb-4"
+                />
+              ) : (
+                <div className="w-full h-60 flex justify-center items-center bg-gray-200 rounded mb-4">
+                  <span className="text-gray-500">No image available</span>
                 </div>
+              )}
+
+              <p className="text-gray-800 dark:text-white text-lg mb-4">
+                {post.description || 'No description provided.'}
+              </p>
+
+              {tags.length > 0 && (
+                <div className="mb-5">
+                  <h4 className="text-sm font-semibold text-blue-500 dark:text-blue-300 mb-1">
+                    Tags:
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className="bg-yellow-200 text-yellow-800 px-3 py-1 rounded-full text-sm"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mb-4 text-sm">
+                <p className="text-blue-500 dark:text-blue-300 font-semibold">
+                  Location Found:
+                </p>
+                <p className="text-gray-600 dark:text-gray-200">
+                  {post.location || 'Not specified'}
+                </p>
               </div>
-            )}
 
-            <div className="mb-4 text-sm">
-              <p className="text-blue-500 dark:text-blue-300 font-semibold">
-                Location Found:
-              </p>
-              <p className="text-gray-600 dark:text-gray-200">
-                {post.location || 'Not specified'}
-              </p>
-            </div>
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-blue-500 dark:text-blue-300 mb-1">
+                  Key Details (Private)
+                </h4>
+                <p className="text-gray-600 dark:text-gray-200 text-sm italic">
+                  {post.keyDetails || 'No private key details provided.'}
+                </p>
+              </div>
 
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold text-blue-500 dark:text-blue-300 mb-1">
-                Key Details (Private)
-              </h4>
-              <p className="text-gray-600 dark:text-gray-200 text-sm italic">
-                {post.keyDetails || 'No private key details provided.'}
+              <p className="text-sm text-gray-500 dark:text-gray-300">
+                Posted on: {new Date(post.timestamp).toLocaleString()}
               </p>
             </div>
-
-            <p className="text-sm text-gray-500 dark:text-gray-300">
-              Posted on: {new Date(post.timestamp).toLocaleString()}
-            </p>
-          </div>
-        ))
+          );
+        })
       )}
     </div>
   );
